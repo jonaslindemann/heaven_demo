@@ -1,0 +1,30 @@
+{
+  "name": "heaven-demo",
+  "version": "0",
+  "dependencies": [
+    "assimp",
+    "freetype",
+    "glew",
+    "glfw3",
+    {
+      "name": "imgui",
+      "features": [
+        "docking-experimental",
+        "glfw-binding",
+        "opengl2-binding",
+        "opengl3-binding"
+      ]
+    },
+    "libjpeg-turbo",
+    "libpng",
+    "nlohmann-json",
+    "opengl",
+    "stb",
+    "zlib",
+    "reactphysics3d",
+    "miniaudio",
+    "rtmidi",
+    "miniz",
+    "pugixml"
+  ]
+}

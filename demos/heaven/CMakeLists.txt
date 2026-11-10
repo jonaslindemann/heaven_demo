@@ -1,0 +1,26 @@
+add_demo(heaven_demo
+    SOURCES
+        main.cpp
+        clouds.cpp
+        clouds.h
+        embers.cpp
+        embers.h
+        flower_field.cpp
+        flower_field.h
+        motes.cpp
+        motes.h
+        heaven_window.cpp
+        giants.cpp
+        giants.h
+        heaven_window.h
+        islands.cpp
+        islands.h
+        lake_material.cpp
+        lake_material.h
+        light_trails.cpp
+        light_trails.h
+        swirls.cpp
+        swirls.h
+    ASSETS
+        ${PROJECT_SOURCE_DIR}/assets
+)
