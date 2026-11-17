@@ -5,8 +5,8 @@
  * @brief Ribbons of light drawn through the air by the lead melody.
  */
 
-#include <blend_material.h>
-#include <song_data.h>
+#include <ivf/blend_shader_material.h>
+#include <ivfmusic/score.h>
 
 #include <ivf/instanced_mesh_node.h>
 #include <ivf/mesh_node.h>
@@ -46,14 +46,14 @@ public:
      * @param notes Source of notes (e.g. the lead envelope).
      * @param origin Where the trail of a note starts on the water, from the note.
      */
-    void update(double time, const demo::SongEnvelope &notes,
-                const std::function<glm::vec3(const demo::NoteEvent &)> &origin);
+    void update(double time, const ivfmusic::TrackEnvelope &notes,
+                const std::function<glm::vec3(const ivfmusic::ScoreNote &)> &origin);
 
     [[nodiscard]] ivf::InstancedMeshNodePtr node() const { return m_node; }
 
 private:
     ivf::InstancedMeshNodePtr m_node;
-    demo::BlendMaterialPtr m_material;
+    ivf::BlendShaderMaterialPtr m_material;
 };
 
 } // namespace heaven

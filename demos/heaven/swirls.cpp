@@ -27,8 +27,8 @@ const glm::vec3 kStreamColors[] = {{0.5f, 0.95f, 1.0f}, {1.0f, 0.6f, 0.9f}, {0.7
 
 bool Swirls::create(const std::string &vertexShader, const std::string &fragmentShader, int perStream)
 {
-    m_material = demo::BlendMaterial::createFromFiles(vertexShader, fragmentShader, "heaven_swirl",
-                                                      demo::BlendMaterial::Mode::Additive, true);
+    m_material = ivf::BlendShaderMaterial::createFromFiles(vertexShader, fragmentShader, "heaven_swirl",
+                                                      ivf::BlendMode::Additive, true);
     if (!m_material)
         return false;
 

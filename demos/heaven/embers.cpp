@@ -8,8 +8,8 @@ using namespace ivf;
 bool Embers::create(const std::string &vertexShader, const std::string &fragmentShader,
                     const std::vector<FlowerPlacement> &flowers, int perFlower)
 {
-    m_material = demo::BlendMaterial::createFromFiles(vertexShader, fragmentShader, "heaven_ember",
-                                                      demo::BlendMaterial::Mode::Additive, true);
+    m_material = ivf::BlendShaderMaterial::createFromFiles(vertexShader, fragmentShader, "heaven_ember",
+                                                      ivf::BlendMode::Additive, true);
     if (!m_material)
         return false;
 

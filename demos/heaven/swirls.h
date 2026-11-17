@@ -5,7 +5,7 @@
  * @brief Streams of sparkles flowing along curved paths around the garden.
  */
 
-#include <blend_material.h>
+#include <ivf/blend_shader_material.h>
 
 #include <ivf/instanced_mesh_node.h>
 
@@ -18,7 +18,7 @@ namespace heaven {
  * @brief Sparkles flowing in looping streams through the garden; they flare up with the arps.
  *
  * The stream curves and the motion along them are computed in swirl.vert, so
- * positions are a pure function of song time. The `uSwirl` uniform (timeline)
+ * positions are a pure function of song time. The `uSwirl` uniform (automation)
  * brings the streams in one after another.
  *
  * Per-instance data: (stream index, position along the stream in [0, 1), seed, size).
@@ -33,7 +33,7 @@ public:
 
 private:
     ivf::InstancedMeshNodePtr m_node;
-    demo::BlendMaterialPtr m_material;
+    ivf::BlendShaderMaterialPtr m_material;
 };
 
 } // namespace heaven
