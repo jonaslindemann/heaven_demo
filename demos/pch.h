@@ -7,4 +7,5 @@
 #include <imgui.h>
 #include <ivf/gl.h>
 #include <ivf/nodes.h>
+#include <ivfmusic/ivfmusic.h>
 #include <ivfui/ui.h>

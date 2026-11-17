@@ -48,12 +48,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${PROJECT_SOURCE_DIR}/bin/release")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${PROJECT_SOURCE_DIR}/bin/relwithdebinfo")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL "${PROJECT_SOURCE_DIR}/bin/minsizerel")
 
-# Prebuilt ivf2 libraries from the external ivf2 checkout (../ivf2 by default)
+# Prebuilt ivf2 libraries (including ivfmusic) from the external ivf2 checkout (../ivf2 by default)
 include(cmake/ivf2.cmake)
 
-# Reusable demo engine, and one directory per demo built with add_demo()
+# One directory per demo built with add_demo(), on ivf2's ivfmusic library
+set(DEMO_PCH "${PROJECT_SOURCE_DIR}/demos/pch.h")
 include(cmake/demo.cmake)
-add_subdirectory(src/engine)
 
 add_subdirectory(demos/heaven)
 set_property(DIRECTORY ${PROJECT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT heaven_demo)

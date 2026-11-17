@@ -27,8 +27,8 @@ const glm::vec3 kMoteColors[] = {
 
 bool Motes::create(const std::string &vertexShader, const std::string &fragmentShader, int count)
 {
-    m_material = demo::BlendMaterial::createFromFiles(vertexShader, fragmentShader, "heaven_mote",
-                                                      demo::BlendMaterial::Mode::Additive, true);
+    m_material = ivf::BlendShaderMaterial::createFromFiles(vertexShader, fragmentShader, "heaven_mote",
+                                                      ivf::BlendMode::Additive, true);
     if (!m_material)
         return false;
 

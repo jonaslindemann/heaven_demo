@@ -11,28 +11,28 @@
 using namespace heaven;
 using namespace ivf;
 
-HeavenWindow::HeavenWindow(const demo::DemoConfig &config) : DemoWindow(config) {}
+HeavenWindow::HeavenWindow(const ivfmusic::MusicSceneConfig &config) : GLFWMusicSceneWindow(config) {}
 
-int HeavenWindow::onDemoSetup()
+int HeavenWindow::onSceneSetup()
 {
     // Track groups of the Renoise song and how each responds:
     // sharp hits for rhythm, slow breathing for pads
-    m_bass = demo::SongEnvelope(song(), {"Kick", "Bass"}, {0.01f, 0.25f, 0.2f, 0.2f, true});
-    m_pads = demo::SongEnvelope(song(), {"Pad", "Choir"}, {0.6f, 1.0f, 0.8f, 1.5f, true});
-    m_lead = demo::SongEnvelope(song(), {"Lead", "Bell"}, {0.05f, 0.6f, 0.4f, 0.6f, true});
-    m_arp = demo::SongEnvelope(song(), {"Arp A (ackord)", "Arp B (ackord)"}, {0.005f, 0.15f, 0.0f, 0.1f, true});
-    m_kick = demo::SongEnvelope(song(), {"Kick"}, {});
-    m_leadNotes = demo::SongEnvelope(song(), {"Lead"}, {});
-    m_bellNotes = demo::SongEnvelope(song(), {"Bell"}, {});
+    m_bass = ivfmusic::TrackEnvelope(score(), {"Kick", "Bass"}, {0.01f, 0.25f, 0.2f, 0.2f, true});
+    m_pads = ivfmusic::TrackEnvelope(score(), {"Pad", "Choir"}, {0.6f, 1.0f, 0.8f, 1.5f, true});
+    m_lead = ivfmusic::TrackEnvelope(score(), {"Lead", "Bell"}, {0.05f, 0.6f, 0.4f, 0.6f, true});
+    m_arp = ivfmusic::TrackEnvelope(score(), {"Arp A (ackord)", "Arp B (ackord)"}, {0.005f, 0.15f, 0.0f, 0.1f, true});
+    m_kick = ivfmusic::TrackEnvelope(score(), {"Kick"}, {});
+    m_leadNotes = ivfmusic::TrackEnvelope(score(), {"Lead"}, {});
+    m_bellNotes = ivfmusic::TrackEnvelope(score(), {"Bell"}, {});
     // Chorus-only hits: they make the islands' veins and the giant stalks pulse, the clouds flash
-    m_stab = demo::SongEnvelope(song(), {"Stab"}, {0.005f, 0.18f, 0.0f, 0.1f, true});
-    m_clap = demo::SongEnvelope(song(), {"Clap"}, {0.005f, 0.25f, 0.0f, 0.15f, true});
+    m_stab = ivfmusic::TrackEnvelope(score(), {"Stab"}, {0.005f, 0.18f, 0.0f, 0.1f, true});
+    m_clap = ivfmusic::TrackEnvelope(score(), {"Clap"}, {0.005f, 0.25f, 0.0f, 0.15f, true});
 
     // Night sky behind everything; added first so all later geometry covers it
     auto sky = Sphere::create(300.0, 64, 32);
-    m_sky = demo::BlendMaterial::createFromFiles(config().resolve("assets/shaders/sky.vert"),
+    m_sky = ivf::BlendShaderMaterial::createFromFiles(config().resolve("assets/shaders/sky.vert"),
                                                  config().resolve("assets/shaders/sky.frag"), "heaven_sky",
-                                                 demo::BlendMaterial::Mode::Background, true);
+                                                 ivf::BlendMode::Background, true);
     if (!m_sky)
         return -1;
     sky->setMaterial(m_sky);
@@ -55,7 +55,7 @@ int HeavenWindow::onDemoSetup()
     // Keep the camera's path through the garden free of flowers
     std::vector<glm::vec2> path;
     for (double bar = 1.0; bar < 121.0; bar += 0.25)
-        if (const auto pose = DemoWindow::cameraPathAt(clock().timeAtBar(bar - 1.0)))
+        if (const auto pose = GLFWMusicSceneWindow::cameraAt(transport().timeAtBar(bar - 1.0)))
             path.emplace_back(pose->position.x, pose->position.z);
     auto nearPath = [&path](glm::vec2 p) {
         for (const auto &q : path)
@@ -72,7 +72,7 @@ int HeavenWindow::onDemoSetup()
     // (Act IV is left out: the islands have sunk by the time the camera comes down.)
     auto highPathNear = [this](glm::vec2 p, float radius) {
         for (double bar = 1.0; bar < 137.0; bar += 0.25)
-            if (const auto pose = DemoWindow::cameraPathAt(clock().timeAtBar(bar - 1.0)))
+            if (const auto pose = GLFWMusicSceneWindow::cameraAt(transport().timeAtBar(bar - 1.0)))
                 if (pose->position.y > 4.0f &&
                     glm::distance(p, glm::vec2(pose->position.x, pose->position.z)) < radius + 6.0f)
                     return true;
@@ -123,7 +123,7 @@ int HeavenWindow::onDemoSetup()
     m_fog->load();
     addEffect(m_fog);
 
-    m_glow = demo::GlowEffect::create();
+    m_glow = ivf::MipBloomEffect::create();
     m_glow->setThreshold(0.4f);
     m_glow->setSpread(0.8f);
     m_glow->load();
@@ -139,9 +139,9 @@ MusicState HeavenWindow::musicAt(double time) const
     return MusicState{m_bass.value(time), m_pads.value(time), m_lead.value(time), m_arp.value(time)};
 }
 
-std::optional<demo::CameraPose> HeavenWindow::cameraPathAt(double time) const
+std::optional<ivf::TimelineCamera> HeavenWindow::cameraAt(double time) const
 {
-    auto pose = DemoWindow::cameraPathAt(time);
+    auto pose = GLFWMusicSceneWindow::cameraAt(time);
     if (!pose)
         return pose;
 
@@ -162,7 +162,7 @@ glm::vec2 HeavenWindow::spotAhead(double noteTime, float nearest, float farthest
         h ^= h >> 13;
         return float(h & 0xffffu) / 65535.0f;
     };
-    const auto pose = cameraPathAt(noteTime);
+    const auto pose = cameraAt(noteTime);
     if (!pose)
         return glm::vec2(0.0f);
     glm::vec2 forward(pose->target.x - pose->position.x, pose->target.z - pose->position.z);
@@ -185,7 +185,7 @@ void HeavenWindow::updateRings(double time)
     std::vector<Ring> rings;
     for (const auto &note : m_kick.notesBetween(time - ringLife, time + 1e-6))
         rings.push_back({spotAhead(note.time, 5.0f, 15.0f, 9.0f, 0u), note.time, 0.6f + 0.4f * note.velocity});
-    const double outro = clock().timeAtBar(140.0);
+    const double outro = transport().timeAtBar(140.0);
     for (const auto &note : m_bellNotes.notesBetween(std::max(time - ringLife, outro), time + 1e-6))
         rings.push_back({glm::vec2(kLastFlower.x, kLastFlower.z), note.time, 0.5f + 0.5f * note.velocity});
     std::sort(rings.begin(), rings.end(), [](const Ring &a, const Ring &b) { return a.time < b.time; });
@@ -198,20 +198,20 @@ void HeavenWindow::updateRings(double time)
 
     // Kicks on a downbeat also send a wave of light through the roots, from the garden's center
     constexpr double waveLife = 5.0;
-    const double barLength = clock().timeAtBar(1.0) - clock().timeAtBar(0.0);
+    const double barLength = transport().timeAtBar(1.0) - transport().timeAtBar(0.0);
     glm::vec3 waves(-1000.0f);
     int wave = 0;
     const auto recent = m_kick.notesBetween(time - waveLife, time + 1e-6);
     for (auto it = recent.rbegin(); it != recent.rend() && wave < 3; ++it)
     {
-        const double inBar = std::fmod(it->time - clock().timeAtBar(0.0), barLength);
+        const double inBar = std::fmod(it->time - transport().timeAtBar(0.0), barLength);
         if (inBar < 0.01 || inBar > barLength - 0.01)
             waves[wave++] = float(it->time);
     }
     ShaderMaterial::setGlobalUniform("uWaves", waves);
 }
 
-void HeavenWindow::onDemoUpdate(double time, double dt)
+void HeavenWindow::onSceneUpdate(double time, double dt)
 {
     m_music = musicAt(time);
 
@@ -241,8 +241,8 @@ void HeavenWindow::onDemoUpdate(double time, double dt)
     // Act III: weightlessness. uFloat is how many seconds the garden has been weightless,
     // the integral of (1 - gravity), so drifting stays a pure function of song time.
     const double bar = barPosition();
-    const double secondsPerBar = clock().timeAtBar(1.0) - clock().timeAtBar(0.0);
-    const double weightless = (bar - 1.0) - timeline().integral("gravity", 1.0, bar, 1.0f);
+    const double secondsPerBar = transport().timeAtBar(1.0) - transport().timeAtBar(0.0);
+    const double weightless = (bar - 1.0) - automation().integral("gravity", 1.0, bar, 1.0f);
     ShaderMaterial::setGlobalUniform("uGravity", param("gravity", 1.0f));
     ShaderMaterial::setGlobalUniform("uFloat", float(std::max(weightless, 0.0) * secondsPerBar));
     ShaderMaterial::setGlobalUniform("uMirror", param("mirror", 0.0f));
@@ -261,14 +261,14 @@ void HeavenWindow::onDemoUpdate(double time, double dt)
 
     updateRings(time);
     // Lead notes rise from the water ahead of the camera as trails of light
-    m_trails.update(time, m_leadNotes, [this](const demo::NoteEvent &note) {
+    m_trails.update(time, m_leadNotes, [this](const ivfmusic::ScoreNote &note) {
         const glm::vec2 spot = spotAhead(note.time, 6.0f, 14.0f, 10.0f, 0x5bd1e995u);
         return glm::vec3(spot.x, 0.0f, spot.y);
     });
     m_glow->setIntensity(0.8f + 0.8f * glow + 0.5f * m_music.pads);
 }
 
-void HeavenWindow::onDemoUi()
+void HeavenWindow::onSceneUi()
 {
     const ImGuiViewport *viewport = ImGui::GetMainViewport();
     ImGui::SetNextWindowPos({viewport->WorkPos.x + 10.0f, viewport->WorkPos.y + 10.0f}, ImGuiCond_FirstUseEver);
@@ -278,6 +278,6 @@ void HeavenWindow::onDemoUi()
     ImGui::ProgressBar(m_music.pads, {-1.0f, 0.0f}, "pads");
     ImGui::ProgressBar(m_music.lead, {-1.0f, 0.0f}, "lead");
     ImGui::ProgressBar(m_music.arp, {-1.0f, 0.0f}, "arp");
-    ImGui::TextUnformatted(freeCamera() ? "F4: free camera" : "Guided camera (F4: free)");
+    ImGui::TextUnformatted(freeCamera() ? "F4: free camera" : "Path camera (F4: free)");
     ImGui::End();
 }

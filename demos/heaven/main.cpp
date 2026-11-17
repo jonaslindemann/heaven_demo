@@ -2,11 +2,11 @@
 
 int main(int argc, char **argv)
 {
-    demo::DemoConfig config;
+    ivfmusic::MusicSceneConfig config;
     config.title = "Paranoid Frog - Heaven";
     config.audioFile = "assets/heaven.mp3";
-    config.songFile = "assets/heaven.xrns"; // tempo and note events
-    config.timelineFile = "assets/heaven_timeline.json"; // acts and scene parameters
+    config.scoreFile = "assets/heaven.xrns"; // tempo and note events
+    config.automationFile = "assets/heaven_timeline.json"; // acts and scene parameters
 
-    return demo::runDemo<heaven::HeavenWindow>(config, argc, argv);
+    return ivfmusic::run<heaven::HeavenWindow>(config, argc, argv);
 }

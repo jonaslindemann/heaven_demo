@@ -29,8 +29,8 @@ const glm::vec3 kCloudTints[] = {{1.0f, 0.55f, 0.85f}, {0.65f, 0.5f, 1.0f}, {0.4
 
 bool Clouds::create(const std::string &vertexShader, const std::string &fragmentShader, int count)
 {
-    m_material = demo::BlendMaterial::createFromFiles(vertexShader, fragmentShader, "heaven_cloud",
-                                                      demo::BlendMaterial::Mode::Additive, true);
+    m_material = ivf::BlendShaderMaterial::createFromFiles(vertexShader, fragmentShader, "heaven_cloud",
+                                                      ivf::BlendMode::Additive, true);
     if (!m_material)
         return false;
 

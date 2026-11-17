@@ -15,10 +15,10 @@
 #include "motes.h"
 #include "swirls.h"
 
-#include <blend_material.h>
-#include <demo_window.h>
-#include <glow_effect.h>
-#include <song_data.h>
+#include <ivf/blend_shader_material.h>
+#include <ivfmusic/glfw_music_scene_window.h>
+#include <ivf/mip_bloom_effect.h>
+#include <ivfmusic/score.h>
 
 #include <ivf/fog_effect.h>
 #include <ivf/nodes.h>
@@ -42,15 +42,15 @@ struct MusicState {
  * @class HeavenWindow
  * @brief The Dreaming Garden: a glowing garden on a dark lake, driven by the song.
  */
-class HeavenWindow : public demo::DemoWindow {
+class HeavenWindow : public ivfmusic::GLFWMusicSceneWindow {
 public:
-    explicit HeavenWindow(const demo::DemoConfig &config);
+    explicit HeavenWindow(const ivfmusic::MusicSceneConfig &config);
 
 protected:
-    int onDemoSetup() override;
-    void onDemoUpdate(double time, double dt) override;
-    void onDemoUi() override;
-    std::optional<demo::CameraPose> cameraPathAt(double time) const override;
+    int onSceneSetup() override;
+    void onSceneUpdate(double time, double dt) override;
+    void onSceneUi() override;
+    std::optional<ivf::TimelineCamera> cameraAt(double time) const override;
 
     /** @brief Musical controls at a song time; a pure function of time. */
     MusicState musicAt(double time) const;
@@ -67,15 +67,15 @@ private:
      */
     glm::vec2 spotAhead(double noteTime, float nearest, float farthest, float width, uint32_t salt) const;
 
-    demo::SongEnvelope m_bass;
-    demo::SongEnvelope m_pads;
-    demo::SongEnvelope m_lead;
-    demo::SongEnvelope m_arp;
-    demo::SongEnvelope m_kick;      ///< Note source for the rings on the water and the waves of light.
-    demo::SongEnvelope m_leadNotes; ///< Note source for the light trails.
-    demo::SongEnvelope m_bellNotes; ///< Note source for the rings from the last flower (outro).
-    demo::SongEnvelope m_stab;
-    demo::SongEnvelope m_clap;
+    ivfmusic::TrackEnvelope m_bass;
+    ivfmusic::TrackEnvelope m_pads;
+    ivfmusic::TrackEnvelope m_lead;
+    ivfmusic::TrackEnvelope m_arp;
+    ivfmusic::TrackEnvelope m_kick;      ///< Note source for the rings on the water and the waves of light.
+    ivfmusic::TrackEnvelope m_leadNotes; ///< Note source for the light trails.
+    ivfmusic::TrackEnvelope m_bellNotes; ///< Note source for the rings from the last flower (outro).
+    ivfmusic::TrackEnvelope m_stab;
+    ivfmusic::TrackEnvelope m_clap;
     MusicState m_music;
 
     FlowerField m_flowers;
@@ -87,9 +87,9 @@ private:
     Clouds m_clouds;
     Embers m_embers;
     LakeMaterialPtr m_lake;
-    demo::BlendMaterialPtr m_sky;
+    ivf::BlendShaderMaterialPtr m_sky;
     ivf::FogEffectPtr m_fog;
-    demo::GlowEffectPtr m_glow;
+    ivf::MipBloomEffectPtr m_glow;
 };
 
 } // namespace heaven

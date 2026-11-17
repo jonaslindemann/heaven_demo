@@ -42,8 +42,8 @@ MeshNodePtr heaven::buildRibbonMesh(int segments)
 
 bool LightTrails::create(const std::string &vertexShader, const std::string &fragmentShader)
 {
-    m_material = demo::BlendMaterial::createFromFiles(vertexShader, fragmentShader, "heaven_trail",
-                                                      demo::BlendMaterial::Mode::Additive, true);
+    m_material = ivf::BlendShaderMaterial::createFromFiles(vertexShader, fragmentShader, "heaven_trail",
+                                                      ivf::BlendMode::Additive, true);
     if (!m_material)
         return false;
 
@@ -57,8 +57,8 @@ bool LightTrails::create(const std::string &vertexShader, const std::string &fra
     return true;
 }
 
-void LightTrails::update(double time, const demo::SongEnvelope &notes,
-                         const std::function<glm::vec3(const demo::NoteEvent &)> &origin)
+void LightTrails::update(double time, const ivfmusic::TrackEnvelope &notes,
+                         const std::function<glm::vec3(const ivfmusic::ScoreNote &)> &origin)
 {
     // Notes whose trail can still be visible (durations are at most a few seconds)
     const auto recent = notes.notesBetween(time - Lifetime - 5.0, time + 1e-6);

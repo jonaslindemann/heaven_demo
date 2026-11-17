@@ -42,8 +42,8 @@ bool Islands::create(const std::string &rockVertex, const std::string &rockFragm
                      const std::string &vineFragment, const std::function<bool(glm::vec2, float)> &keepClear)
 {
     m_rockMaterial = ShaderMaterial::createFromFiles(rockVertex, rockFragment, "heaven_island", true);
-    m_vineMaterial = demo::BlendMaterial::createFromFiles(vineVertex, vineFragment, "heaven_vine",
-                                                          demo::BlendMaterial::Mode::Additive, true);
+    m_vineMaterial = ivf::BlendShaderMaterial::createFromFiles(vineVertex, vineFragment, "heaven_vine",
+                                                          ivf::BlendMode::Additive, true);
     if (!m_rockMaterial || !m_vineMaterial)
         return false;
 

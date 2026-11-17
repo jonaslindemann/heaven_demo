@@ -7,7 +7,7 @@
 
 #include "flower_field.h"
 
-#include <blend_material.h>
+#include <ivf/blend_shader_material.h>
 
 #include <ivf/instanced_mesh_node.h>
 #include <ivf/shader_material.h>
@@ -24,7 +24,7 @@ namespace heaven {
  * @class Islands
  * @brief Rocky islands with glowing veins, flowers on top and luminous vines hanging below.
  *
- * update() places every island from the song time and the `islands` timeline
+ * update() places every island from the song time and the `islands` automation
  * value and publishes it as the global uniform `uIsland[i]` = (position, presence),
  * which the rock (island.vert), the vines (vine.vert) and the island flowers
  * (flower.vert) all read, so they move together. Islands rise out of the lake
@@ -41,7 +41,7 @@ public:
     bool create(const std::string &rockVertex, const std::string &rockFragment, const std::string &vineVertex,
                 const std::string &vineFragment, const std::function<bool(glm::vec2, float)> &keepClear = {});
 
-    /** @brief Place the islands; @p amount is the `islands` timeline value in [0, 1]. */
+    /** @brief Place the islands; @p amount is the `islands` automation value in [0, 1]. */
     void update(double time, float amount);
 
     /** @brief Spots for the flowers on the island tops, see FlowerField::addIslandFlowers(). */
@@ -64,7 +64,7 @@ private:
     ivf::InstancedMeshNodePtr m_rocks;
     ivf::InstancedMeshNodePtr m_vines;
     ivf::ShaderMaterialPtr m_rockMaterial;
-    demo::BlendMaterialPtr m_vineMaterial;
+    ivf::BlendShaderMaterialPtr m_vineMaterial;
 };
 
 } // namespace heaven

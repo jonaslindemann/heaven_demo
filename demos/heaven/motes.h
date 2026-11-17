@@ -5,7 +5,7 @@
  * @brief Thousands of glowing motes drifting through the garden.
  */
 
-#include <blend_material.h>
+#include <ivf/blend_shader_material.h>
 
 #include <ivf/instanced_mesh_node.h>
 
@@ -35,7 +35,7 @@ public:
 
 private:
     ivf::InstancedMeshNodePtr m_node;
-    demo::BlendMaterialPtr m_material;
+    ivf::BlendShaderMaterialPtr m_material;
 };
 
 } // namespace heaven
